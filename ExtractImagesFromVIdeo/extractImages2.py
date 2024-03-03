@@ -1,34 +1,40 @@
 import cv2
 import os
 import random
+import numpy as np
 
 def extract_frames(video_path, output_folder, num_frames):
     # Abre el archivo de video
     cap = cv2.VideoCapture(video_path)
 
     # Obtiene la frecuencia de fotogramas (fps) del video
-    fps = cap.get(cv2.CAP_PROP_FPS)
+    #fps = cap.get(cv2.CAP_PROP_FPS)
 
-    # Obtiene el número total de fotogramas en el video
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    # Lista para almacenar los momentos de tiempo seleccionados aleatoriamente
-    selected_frames = random.sample(range(total_frames), min(num_frames, total_frames))
+    # Parámetro lambda para la distribución exponencial
+    lambda_param = 0.5  # Puedes ajustar este valor según tus preferencias
+
+    # Genera los tiempos seleccionados aleatoriamente con distribución exponencial
+    selected_times = np.random.exponential(scale=lambda_param, size=num_frames)
+
+    # Normaliza los tiempos al tiempo total del video
+    selected_times = (selected_times / selected_times.sum()) * total_frames
 
     # Lista para almacenar los nombres de los archivos de imagen
     image_files = []
 
     # Itera sobre los fotogramas seleccionados
-    for frame_number in selected_frames:
+    for time in selected_times:
         # Establece el fotograma en la posición actual
-        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+        cap.set(cv2.CAP_PROP_POS_FRAMES, int(time))
 
         # Lee el fotograma
         ret, frame = cap.read()
 
         if ret:
             # Genera un nombre de archivo único basado en el número de fotograma
-            image_file = os.path.join(output_folder, f"frame_{frame_number}.jpg")
+            image_file = os.path.join(output_folder, f"frame_{int(time)}.jpg")
 
             # Guarda el fotograma como una imagen
             cv2.imwrite(image_file, frame)
@@ -45,7 +51,7 @@ def extract_frames(video_path, output_folder, num_frames):
 video_path = 'C:/Users/Sierpe/Documents/ProjectTraffic/Assigment1/DataSet_TrainSet/traffic.mp4'
 
 # Carpeta de salida para las imágenes
-output_folder = './testimages'
+output_folder = './testimages2'
 
 # Número total de imágenes deseadas
 num_frames = 90
