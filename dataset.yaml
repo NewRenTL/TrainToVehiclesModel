@@ -1,0 +1,4 @@
+train: C:\Users\Sierpe\Documents\ProjectTraffic\Assigment1\DataSet_TrainSet\MixCarsData\train\
+val: C:\Users\Sierpe\Documents\ProjectTraffic\Assigment1\DataSet_TrainSet\MixCarsData\val\
+nc: 5
+names: ["MiniBus", "Combi", "Bus", "Moto", "MotoTaxi"]
